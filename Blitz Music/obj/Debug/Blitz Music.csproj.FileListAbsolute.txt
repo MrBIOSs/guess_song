@@ -1,0 +1,37 @@
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\Blitz Music.exe.config
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\Blitz Music.exe
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\Blitz Music.pdb
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Music.csproj.AssemblyReference.cache
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz_Music.Properties.Resources.resources
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Music.csproj.GenerateResource.cache
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Music.csproj.CoreCompileInputs.cache
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Music.exe
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Music.pdb
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz_Music.MainForm.resources
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz_Music.Views.AboutForm.resources
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz_Music.Views.SettingsForm.resources
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz_Music.Views.PlayListForm.resources
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\Microsoft.Win32.Registry.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Asio.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Core.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Midi.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Wasapi.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.WinForms.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.WinMM.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\System.Security.AccessControl.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\Microsoft.Win32.Registry.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Asio.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Core.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Midi.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.Wasapi.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.WinForms.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\NAudio.WinMM.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\System.Security.AccessControl.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\obj\Debug\Blitz Mu.04EF8469.Up2Date
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\TagLibSharp.dll
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\TagLibSharp.pdb
+C:\Users\mrbio\Desktop\Games to Git\Blitz Music\Blitz Music\bin\Debug\TagLibSharp.xml
