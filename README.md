@@ -1,19 +1,56 @@
-# BlitzMusic
-Фан проект игра Угадай песню
 
-## Описание
-Тренеровочный проект игра угадай песню.
+# 🎵 Guess Song
 
-В игре есть раунды, в каждом из которых вам нужно быстро угадать какая песня звучит. Есть возможность выбора сложности, списка песен и игрового режима.
+**Guess Song** — this is an exciting music quiz game in which the player must guess the names of songs from a short fragment.   
+🎯 Great for music fans, parties and training your musical memory!
 
-Игра позволяет узнать насколько хорошо вы знаете песни любимого исполнителя.
+## ✅ Features
 
-Правила простые: случайно выбирается одна из песен и дается несколько вариантов ответа. Победные раунды суммируются и в конце выдается титул.
+- 🎧 Guess the songs from a 10-second fragment
+- 🏆 Points and levels system
+- 🎯 Several game modes:
+    - Classic (one right song)
+    - For time (as much as you can do in 60 seconds)
+- 🌍 Support for dark and light themes
+- 🌐 Multi-platform: works on mobile, desktop and browser
+- 📊 Player progress and statistics
 
-Код ревью приветствуется!)
+## 🛠 Technology stack
 
-## Версия
-### 0.1.0
-- Выбор сложности: легкий, средний, сложный.
-- Выбор мода: случайный отрезок.
-- выбор папки с музыкой .mp3.
+- **Flutter** — for cross-platform development
+- **Dart** — programming language
+- **Shared Preferences** — storing local statistics
+
+## 🚀 Project launch
+
+1. Install [Flutter SDK](https://docs.flutter.dev/get-started/install)
+2. Clone repositories: https://github.com/MrBIOSs/guess_song.git
+3. Get dependencies: `flutter pub get`
+4. Launch the application: `flutter run`
+
+## 📦 Build
+
+### Android
+
+    flutter build apk --release
+
+### iOS
+
+    flutter build ios --release
+
+### Web
+
+    flutter build web --release
+
+### Desktop
+
+    flutter build windows --release
+
+## 🤝 Participation
+
+Suggestions, corrections and ideas are welcome!
+Open **Issue** or send **Pull Request**.
+
+## 📄 License
+
+This project is distributed under the license **MIT**.
