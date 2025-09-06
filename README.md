@@ -20,6 +20,9 @@
 - **Flutter** — for cross-platform development
 - **Dart** — programming language
 - **Shared Preferences** — storing local statistics
+- **Riverpod** — state management
+- **Dio** — working with API
+- **Talker** — logger
 
 ## 🚀 Project launch
 
