@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/theme_provider.dart';
-import '../main.dart';
+import '../router/router.dart';
 import '../ui/theme/theme.dart';
 
 class GuessSongApp extends ConsumerWidget {
@@ -12,12 +12,13 @@ class GuessSongApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider).themeMode;
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Guess Song',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
     );
   }
 }

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/scope.dart';
 import '../../repositories/theme/theme.dart';
 
 part 'theme_state.dart';
-
-final themeRepositoryProvider = Provider<IThemeRepository>((ref) {
-  final preferences = ref.watch(sharedPreferencesProvider);
-  return ThemeRepository(preferences: preferences);
-});
 
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeState>((ref) {
   final repository = ref.watch(themeRepositoryProvider);

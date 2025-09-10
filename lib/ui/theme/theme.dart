@@ -54,13 +54,13 @@ class AppTheme {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _primaryColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
         elevation: 3,
-        shadowColor: _primaryColor.withValues(alpha: .3),
+        shadowColor: _secondaryColor.withValues(alpha: .3),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -101,7 +101,7 @@ class AppTheme {
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-          if (states.contains(WidgetState.selected)) return _primaryColor;
+          if (states.contains(WidgetState.selected)) return _secondaryColor;
           return Colors.grey;
         },
       ),
@@ -145,11 +145,11 @@ class AppTheme {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _primaryColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
         elevation: 2,
         shadowColor: Colors.grey.withValues(alpha: .2),
       ),
@@ -195,7 +195,7 @@ class AppTheme {
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-          if (states.contains(WidgetState.selected)) return _primaryColor;
+          if (states.contains(WidgetState.selected)) return _secondaryColor;
           return Colors.grey;
         },
       ),

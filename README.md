@@ -21,6 +21,7 @@
 - **Dart** — programming language
 - **Shared Preferences** — storing local statistics
 - **Riverpod** — state management
+- **Go Router** — navigator
 - **Dio** — working with API
 - **Talker** — logger
 

@@ -1,7 +1,7 @@
 name: guess_song
 description: "A fun music quiz game."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.1.0+1
+version: 1.2.0+1
 
 environment:
   sdk: ^3.7.2
@@ -10,15 +10,23 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
   package_info_plus: ^8.3.1
   shared_preferences: ^2.5.3
   flutter_riverpod: ^2.6.1
+  dio: ^5.9.0
+  flutter_dotenv: ^6.0.0
+  get_it: ^8.2.0
+  youtube_player_flutter: ^9.1.2
+  go_router: ^16.2.1
+
+  # UI
+  top_snackbar_flutter: ^3.3.0
+  cupertino_icons: ^1.0.8
 
   # logger
   talker_flutter: ^5.0.0
   talker_riverpod_logger: ^5.0.0
-
+  talker_dio_logger: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +39,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/splash/
 
   # To add custom fonts to your application, add a fonts section here,
