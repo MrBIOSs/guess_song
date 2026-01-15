@@ -20,7 +20,7 @@ class NotFoundScreen extends StatelessWidget {
             Icon(Icons.error, size: 100, color: theme.colorScheme.error),
             Text(
               '404 - Page not found',
-              style: theme.textTheme.displayMedium,
+              style: theme.textTheme.titleLarge,
             ),
             ElevatedButton(
               onPressed: () => context.go(AppRoute.root),

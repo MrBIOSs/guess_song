@@ -3,17 +3,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../api/dio_client.dart';
-import 'config.dart';
 
 final G = GetIt.instance;
 
-class DIContainer {
-  const DIContainer(this.config);
-  final Config config;
+abstract class DIContainer {
+  static Future<void> init() async {
+    final talker = TalkerFlutter.init();
+    talker.debug('Initializing the application...');
 
-  void register() {
-    G.registerSingleton<Talker>(config.talker);
-    G.registerSingleton<YoutubeDioClient>(config.apiClient);
-    G.registerSingleton<SharedPreferences>(config.preferences);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    // final apiClient = YoutubeDioClient(talker);
+
+    G.registerSingleton<Talker>(talker);
+    G.registerSingleton<SharedPreferences>(sharedPreferences);
   }
 }

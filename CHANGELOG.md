@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0] - 2026-01-15
+- Updated Readme.md
+- Code refactoring was done
+- Redesign done
+- Removed Settings screen
+
 ## [1.2.0] - 2025-09-09
 - Connected to YouTube API
 - Added Game Setup screen

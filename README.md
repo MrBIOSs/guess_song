@@ -4,16 +4,23 @@
 **Guess Song** — this is an exciting music quiz game in which the player must guess the names of songs from a short fragment.   
 🎯 Great for music fans, parties and training your musical memory!
 
+> ⚠️ All audio samples and metadata are sourced from royalty-free or open-license music libraries.
+
 ## ✅ Features
 
-- 🎧 Guess the songs from a 10-second fragment
-- 🏆 Points and levels system
-- 🎯 Several game modes:
-    - Classic (one right song)
-    - For time (as much as you can do in 60 seconds)
-- 🌍 Support for dark and light themes
-- 🌐 Multi-platform: works on mobile, desktop and browser
-- 📊 Player progress and statistics
+- 🎵 **10-question music quiz**: guess the song title from a short audio clip
+- 🏆 **Points & difficulty levels**:
+    - Easy (30 sec song, +10 points)
+    - Medium (15 sec song, +20 points)
+    - Hard (10 sec song, +30 points)
+- 🎯 **Game modes**:
+    - Mixed Songs (random tracks from selected artist)
+    - Album Mode (tracks only from one album)
+- 🌍 **Light & dark themes**
+- 🌐 **Multi-platform**: mobile, desktop (Windows), and web
+- 📊 **End-game statistics**
+- 🔹 **Titles/ranks** based on total earned points
+- 🥇 **Local leaderboard** (Top 5 players on this device)
 
 ## 🛠 Technology stack
 
@@ -24,6 +31,7 @@
 - **Go Router** — navigator
 - **Dio** — working with API
 - **Talker** — logger
+- **GetIt** — DI
 
 ## 🚀 Project launch
 

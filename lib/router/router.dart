@@ -2,21 +2,17 @@ import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../app/di.dart';
-import '../features/game_flow/game/game.dart';
-import '../features/game_flow/game_setup/game_setup.dart';
-import '../features/game_flow/game_summary/game_summary.dart';
+import '../features/game_flow/view/game/view/game_screen.dart';
+import '../features/game_flow/view/game_setup/view/game_setup_screen.dart';
+import '../features/game_flow/view/game_summary/view/game_summary_screen.dart';
 import '../features/not_found/not_found_screen.dart';
-import '../features/settings/settings.dart';
 
 abstract class AppRoute {
-  AppRoute._();
   static const root = '/';
 
   static const gameSetup = '/game-setup';
   static const game = '/game';
   static const gameSummary = '/summary';
-
-  static const settings = '/settings';
 }
 
 final router = GoRouter(
@@ -42,10 +38,6 @@ final router = GoRouter(
           builder: (_, __) => const GameSummaryScreen(),
         ),
       ],
-    ),
-    GoRoute(
-      path: AppRoute.settings,
-      builder: (_, __) => const SettingsScreen(),
     ),
   ],
 );
