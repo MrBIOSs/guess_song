@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.0] - 2026-01-16
+- Removed YouTube API and connected to Itunes API
+- Added Game Mode: mixed, album
+- Added Difficulty: easy, medium, hard
+- Added logic to the Game Setup screen
+
 ## [2.0.0] - 2026-01-15
 - Updated Readme.md
 - Code refactoring was done

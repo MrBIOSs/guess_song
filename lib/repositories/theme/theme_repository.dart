@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app/di.dart';
-import 'theme_repository_interface.dart';
+import 'theme_interface.dart';
 
 final themeRepositoryProvider = Provider<IThemeRepository>((ref) {
   return ThemeRepository(preferences: G<SharedPreferences>());

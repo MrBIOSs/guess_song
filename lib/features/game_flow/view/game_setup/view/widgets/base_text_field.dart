@@ -5,13 +5,11 @@ class BaseTextField extends StatelessWidget {
     super.key,
     required this.label,
     this.hint,
-    required this.value,
     required this.onChanged
   });
 
   final String label;
   final String? hint;
-  final String value;
   final void Function(String) onChanged;
 
   @override
@@ -28,7 +26,6 @@ class BaseTextField extends StatelessWidget {
               hintText: hint,
             ),
             onChanged: onChanged,
-            controller: TextEditingController(text: value),
           ),
         ),
       ],

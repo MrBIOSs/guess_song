@@ -1,24 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../../router/router.dart';
 import '../../../../../ui/theme/theme.dart';
 import '../../../../../utils/extensions/extensions.dart';
+import '../../../logic/game_provider.dart';
+import '../../../models/game_config.dart';
 import '../../widgets/widgets.dart';
 import 'mobile_game_setup_screen.dart';
 import 'widgets/widgets.dart';
 
-class GameSetupScreen extends ConsumerWidget {
+class GameSetupScreen extends ConsumerStatefulWidget {
   const GameSetupScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GameSetupScreen> createState() => _GameSetupScreenState();
+}
+
+class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
+  String _version = '';
+
+  @override
+  void initState() {
+    _getVersion();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     if (context.isMobile) {
       return const MobileGameSetupScreen();
     }
+
+    final gameState = ref.watch(gameProvider);
+    final gameNotifier = ref.read(gameProvider.notifier);
+
+    ref.listen(gameProvider, (previous, next) {
+      if (next.questions.isNotEmpty &&
+          next.currentQuestionIndex == 0 &&
+          previous?.questions.isEmpty == true) {
+        context.go(AppRoute.game);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +74,7 @@ class GameSetupScreen extends ConsumerWidget {
                       color: Theme.of(context).titleTextColor,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     'Test your music knowledge!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -60,46 +85,46 @@ class GameSetupScreen extends ConsumerWidget {
                   BaseTextField(
                     label: 'Username',
                     hint: 'Enter your name',
-                    value: '',
-                    onChanged: (name) {  },
+                    onChanged: gameNotifier.setUsername,
                   ),
                   const SizedBox(height: 16),
-                  BaseDropdown<String>(
+                  BaseDropdown<GameMode>(
                     label: 'Game Mode',
-                    value: 'GameMode.mixed',
+                    value: gameState.gameMode,
                     items: const [
-                      DropdownMenuItem(value: 'GameMode.mixed', child: Text('Mixed Songs')),
-                      DropdownMenuItem(value: 'GameMode.album', child: Text('Album Mode')),
+                      DropdownMenuItem(value: GameMode.mixed, child: Text('Mixed Songs')),
+                      DropdownMenuItem(value: GameMode.album, child: Text('Album Mode')),
                     ],
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      if (value == null) return;
+                      gameNotifier.setGameMode(value);
+                    },
                   ),
                   const SizedBox(height: 16),
                   BaseTextField(
                     label: 'Search Artist',
                     hint: 'e.g. Coldplay, Starset...',
-                    value: '',
-                    onChanged: (name) {  },
+                    onChanged: gameNotifier.setArtistName,
                   ),
-                  if (true)...[
+                  if (gameState.gameMode == GameMode.album)...[
                     const SizedBox(height: 16),
                     BaseTextField(
                       label: 'Album Name',
                       hint: 'e.g. Parachutes, Silos...',
-                      value: '',
-                      onChanged: (name) {  },
+                      onChanged: gameNotifier.setAlbumName,
                     ),
                   ],
                   const SizedBox(height: 20),
                   BaseOutlinedButton(
                     icon: Icons.search,
-                    label: 'Find Songs',
-                    onTap: () {},
+                    label: gameState.isLoading ? 'Searching...' : 'Find Songs',
+                    onTap: gameState.isLoading ? null :  () => gameNotifier.searchSongs(),
                   ),
-                  if (true)...[
+                  if (gameState.foundSongs.isNotEmpty)...[
                     const SizedBox(height: 8),
                     Center(
                       child: Text(
-                        'Found 0 songs by Starset',
+                        'Found ${gameState.foundSongs.length} songs by ${gameState.foundSongs[0].artistName}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).successfulTextColor,
                         )
@@ -107,21 +132,33 @@ class GameSetupScreen extends ConsumerWidget {
                     ),
                   ],
                   const SizedBox(height: 16),
-                  BaseDropdown<String>(
+                  BaseDropdown<Difficulty>(
                     label: 'Difficulty',
-                    value: 'easy',
+                    value: gameState.difficulty,
                     items: const [
-                      DropdownMenuItem(value: 'easy', child: Text('Easy (30s clip, +10 pts)')),
-                      DropdownMenuItem(value: 'medium', child: Text('Medium (15s clip, +20 pts)')),
-                      DropdownMenuItem(value: 'hard', child: Text('Hard (10s clip, +30 pts)')),
+                      DropdownMenuItem(
+                        value: Difficulty.easy,
+                        child: Text('Easy (30s clip, +10 pts)'),
+                      ),
+                      DropdownMenuItem(
+                        value: Difficulty.medium,
+                        child: Text('Medium (15s clip, +20 pts)'),
+                      ),
+                      DropdownMenuItem(
+                        value: Difficulty.hard,
+                        child: Text('Hard (10s clip, +30 pts)'),
+                      ),
                     ],
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      if (value == null) return;
+                      gameNotifier.setDifficulty(value);
+                    },
                   ),
-                  if (true)...[
+                  if (gameState.error != null)...[
                     const SizedBox(height: 12),
                     Center(
                       child: Text(
-                        'Error',
+                        gameState.error!,
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: AppTheme.errorColor,
                         ),
@@ -132,13 +169,11 @@ class GameSetupScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   GradientButton(
                     label: 'Start Game',
-                    onTap: () {
-                      context.go(AppRoute.game);
-                    },
+                    onTap: gameNotifier.startGame,
                   ),
                   const SizedBox(height: 12),
-                  const Center(
-                    child: Text('Version:'),
+                  Center(
+                    child: Text('Version: $_version'),
                   ),
                 ],
               ),
@@ -150,13 +185,7 @@ class GameSetupScreen extends ConsumerWidget {
   }
 
   Future<void> _getVersion() async {
-    // final info = await PackageInfo.fromPlatform();
-  }
-  void _findSongs(String artist) {
-    // TODO: Реализовать поиск альбомов по артисту
-  }
-
-  void _startGame(BuildContext context) {
-    // TODO: Передача данных в игру
+    final packageInfo = await PackageInfo.fromPlatform();
+    _version = packageInfo.version;
   }
 }

@@ -31,6 +31,7 @@ class BaseDropdown<T> extends StatelessWidget {
             onChanged: onChanged,
             icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).borderColor),
             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       ],
