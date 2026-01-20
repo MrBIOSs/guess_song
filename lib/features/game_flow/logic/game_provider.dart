@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
+import '../../../app/di.dart';
 import '../../../repositories/local_storage/local_storage.dart';
 import '../../../repositories/music_api/models/song.dart';
 import '../../../repositories/music_api/music_api.dart';
@@ -11,16 +13,22 @@ final gameProvider = StateNotifierProvider<GameNotifier, GameState>((ref) {
   return GameNotifier(
     musicRepo: ref.read(iTunesRepositoryProvider),
     localStorageRepo: ref.read(localStorageProvider),
+    talker: G<Talker>(),
   );
 });
 
 class GameNotifier extends StateNotifier<GameState> {
-  GameNotifier({required ILocalStorage localStorageRepo, required IMusicRepository musicRepo})
-      : _localStorageRepo = localStorageRepo, _musicRepo = musicRepo,
+  GameNotifier({
+    required ILocalStorage localStorageRepo,
+    required IMusicRepository musicRepo,
+    required Talker talker,
+  })
+      : _localStorageRepo = localStorageRepo, _musicRepo = musicRepo, _talker = talker,
         super(const GameState());
 
   final ILocalStorage _localStorageRepo;
   final IMusicRepository _musicRepo;
+  final Talker _talker;
 
   void setUsername(String value) => state = state.copyWith(username: value, error: null);
 
@@ -116,14 +124,23 @@ class GameNotifier extends StateNotifier<GameState> {
         currentQuestionIndex: 0,
         score: 0,
         selectedAnswer: null,
-        answered: false,
+        hasAnswered: false,
         error: null,
       );
     }
+
+    _talker.info('[Starting game]\n'
+        'Player name: ${state.username}\n'
+        'Game Mode: ${state.gameMode.name}\n'
+        'Artist: ${state.artistName}\n'
+        'Album Name: ${state.artistName}\n'
+        'Difficulty: ${state.difficulty.name}\n'
+        'Questions: ${state.questions.length}'
+    );
   }
 
   void selectAnswer(String answer) {
-    if (state.answered) return;
+    if (state.hasAnswered) return;
 
     final isCorrect = answer == state.questions[state.currentQuestionIndex].song.title;
     final newScore = isCorrect 
@@ -132,17 +149,22 @@ class GameNotifier extends StateNotifier<GameState> {
 
     state = state.copyWith(
       selectedAnswer: answer,
-      answered: true,
+      hasAnswered: true,
       score: newScore,
     );
   }
 
   void nextQuestion() {
     if (state.currentQuestionIndex < state.questions.length - 1) {
+      _talker.info('[Next question #${state.currentQuestionIndex + 1}]\n'
+          'Current answer: ${state.selectedAnswer}\n'
+          'Correct answer: ${state.questions[state.currentQuestionIndex].song.title}'
+      );
+
       state = state.copyWith(
         currentQuestionIndex: state.currentQuestionIndex + 1,
         selectedAnswer: null,
-        answered: false,
+        hasAnswered: false,
       );
     }
   }

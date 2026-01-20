@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
 
@@ -12,6 +13,7 @@ Future<void> main() async {
 
   runZonedGuarded(() {
     WidgetsFlutterBinding.ensureInitialized();
+    usePathUrlStrategy();
 
     runApp(ProviderScope(
       observers: [

@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.0] - 2026-01-20
+- Added logic to the Game screen
+- Added points system
+- Added classic quiz
+
 ## [2.1.0] - 2026-01-16
 - Removed YouTube API and connected to Itunes API
 - Added Game Mode: mixed, album

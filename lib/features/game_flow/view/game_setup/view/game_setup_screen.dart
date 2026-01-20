@@ -186,6 +186,8 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
 
   Future<void> _getVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
-    _version = packageInfo.version;
+    setState(() {
+      _version = packageInfo.version;
+    });
   }
 }

@@ -16,12 +16,12 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   }
   final IThemeRepository _repository;
 
-  void setThemeBrightness(bool isDark) {
+  Future<void> setThemeBrightness(bool isDark) async {
     state = ThemeState(isDark);
     _repository.updateDarkThemePreference(isDark);
   }
 
-  Future<void> _loadTheme() async {
+  void _loadTheme() {
     final isDark = _repository.isDarkThemeSelected();
     state = ThemeState(isDark);
   }

@@ -12,7 +12,7 @@ class GameState {
     this.currentQuestionIndex = 0,
     this.score = 0,
     this.selectedAnswer,
-    this.answered = false,
+    this.hasAnswered = false,
     this.isLoading = false,
     this.error,
   });
@@ -27,7 +27,7 @@ class GameState {
   final int currentQuestionIndex;
   final int score;
   final String? selectedAnswer;
-  final bool answered;
+  final bool hasAnswered;
   final bool isLoading;
   final String? error;
 
@@ -42,7 +42,7 @@ class GameState {
     int? currentQuestionIndex,
     int? score,
     String? selectedAnswer,
-    bool? answered,
+    bool? hasAnswered,
     bool? isLoading,
     String? error,
   }) {
@@ -57,7 +57,7 @@ class GameState {
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       score: score ?? this.score,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
-      answered: answered ?? this.answered,
+      hasAnswered: hasAnswered ?? this.hasAnswered,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );

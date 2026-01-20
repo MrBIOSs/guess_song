@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../router/router.dart';
 import '../../../../../utils/extensions/extensions.dart';
+import '../../../logic/game_provider.dart';
 import '../../widgets/widgets.dart';
+import '../logic/audio_player_provider.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -15,9 +17,34 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadAudioForCurrentQuestion();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final gameState = ref.watch(gameProvider);
+    final gameNotifier = ref.read(gameProvider.notifier);
+    final audioState = ref.watch(audioPlayerProvider);
+    final audioNotifier = ref.read(audioPlayerProvider.notifier);
+
+    final currentQuestion = gameState.questions[gameState.currentQuestionIndex];
+    final isCorrect = gameState.hasAnswered && gameState.selectedAnswer == currentQuestion.song.title;
+    final isWrong = gameState.hasAnswered && isCorrect == false;
+    final hasQuestion = gameState.currentQuestionIndex < gameState.questions.length - 1;
+
+    ref.listen(gameProvider.select((s) => s.currentQuestionIndex), (prev, next) {
+      if (next < gameState.questions.length) {
+        _loadAudioForCurrentQuestion();
+      } else {
+        audioNotifier.stop();
+      }
+    });
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -40,13 +67,13 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Question 1 of 10',
+                          'Question ${gameState.currentQuestionIndex + 1} of ${gameState.questions.length}',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).labelTextColor,
                           ),
                         ),
                         Text(
-                          'Score: 0',
+                          'Score: ${gameState.score}',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).titleTextColor,
@@ -55,7 +82,9 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const LinearProgressIndicator(value: 1 / 10),
+                    LinearProgressIndicator(
+                      value: (gameState.currentQuestionIndex + 1) / gameState.questions.length,
+                    ),
                     const SizedBox(height: 24),
                     WebCard(
                       width: double.infinity,
@@ -72,7 +101,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.network(
-                                'https://static-cse.canva.com/blob/847132/paulskorupskas7KLaxLbSXAunsplash2.jpg',
+                                currentQuestion.song.coverUrl,
                                 fit: BoxFit.cover,
                                 loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) return child;
@@ -99,18 +128,24 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'STARSET',
+                            currentQuestion.song.artistName,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Theme.of(context).bodyTextColor,
                             ),
                           ),
                           const SizedBox(height: 16),
                           BaseOutlinedButton(
-                            icon: CupertinoIcons.play,
-                            label: 'Play Audio Clip',
-                            onTap: () {},
+                            icon: audioState.isPlaying ? Icons.stop : CupertinoIcons.play,
+                            label: audioState.isPlaying ? 'Stop Audio' : 'Play Audio',
+                            onTap: gameState.hasAnswered ? null : () {
+                              if (audioState.isPlaying) {
+                                audioNotifier.stop();
+                              } else {
+                                audioNotifier.play();
+                              }
+                            },
                           ),
-                          if (true)...[
+                          if (audioState.isPlaying)...[
                             const SizedBox(height: 12),
                             Row(
                               children: [
@@ -120,9 +155,9 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                                   color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 const SizedBox(width: 8),
-                                const Expanded(
+                                Expanded(
                                   child: LinearProgressIndicator(
-                                    value: 1 / 100,
+                                    value: audioState.progress,
                                     minHeight: 6,
                                   ),
                                 ),
@@ -132,14 +167,19 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                           const SizedBox(height: 36),
                           Column(
                             spacing: 12,
-                            children: List.generate(4, (index) {
+                            children: List.generate(currentQuestion.options.length, (index) {
+                              final option = currentQuestion.options[index];
+                              final isSelected = gameState.selectedAnswer == option;
+
                               return SizedBox(
                                 height: 40,
                                 width: double.infinity,
                                 child: OutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: gameState.hasAnswered
+                                      ? null
+                                      : () => gameNotifier.selectAnswer(option),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: index == 3
+                                    backgroundColor: isSelected
                                         ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7)
                                         : Theme.of(context).fillColor,
                                     side: BorderSide(
@@ -147,7 +187,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                                     ),
                                   ),
                                   child: Text(
-                                    '$index',
+                                    option,
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: index == 3 ? Colors.white : null
@@ -159,18 +199,20 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                               );
                             }),
                           ),
-                          if (true)...[
+                          if (gameState.hasAnswered)...[
                             const SizedBox(height: 36),
                             Text(
-                              'Correct!',
+                              isCorrect ? 'Correct!' : 'Wrong!',
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                color: Theme.of(context).successfulTextColor,
+                                color: isCorrect
+                                    ? Theme.of(context).successfulTextColor
+                                    : Theme.of(context).colorScheme.error,
                               ),
                             ),
-                            if (true)...[
+                            if (isWrong)...[
                               const SizedBox(height: 8),
                               Text(
-                                'The correct answer was: 1',
+                                'The correct answer was: ${currentQuestion.song.title}',
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Theme.of(context).bodyTextColor,
                                 ),
@@ -178,9 +220,13 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                             ],
                             const SizedBox(height: 16),
                             GradientButton(
-                              label: 'Next Question',
+                              label: hasQuestion ? 'Next Question' : 'View Results',
                               onTap: () {
-                                context.go(AppRoute.gameSummary);
+                                if (hasQuestion) {
+                                  gameNotifier.nextQuestion();
+                                } else {
+                                  context.go('${AppRoute.game}${AppRoute.gameSummary}');
+                                }
                               },
                             ),
                           ],
@@ -194,6 +240,16 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
           ),
         ),
       ),
+    );
+  }
+
+  void _loadAudioForCurrentQuestion() {
+    final gameState = ref.read(gameProvider);
+    final currentQuestion = gameState.questions[gameState.currentQuestionIndex];
+
+    ref.read(audioPlayerProvider.notifier).loadAudio(
+      audioUrl: currentQuestion.song.audioUrl,
+      difficulty: gameState.difficulty,
     );
   }
 }
