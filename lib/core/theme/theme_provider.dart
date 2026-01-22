@@ -11,7 +11,7 @@ final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeState>((ref) {
 });
 
 class ThemeNotifier extends StateNotifier<ThemeState> {
-  ThemeNotifier(this._repository) : super(const ThemeState(false)) {
+  ThemeNotifier(this._repository) : super(const ThemeState(true)) {
     _loadTheme();
   }
   final IThemeRepository _repository;

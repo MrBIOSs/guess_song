@@ -1,4 +1,6 @@
+import '../../features/game_flow/view/game_summary/models/leaderboard.dart';
+
 abstract interface class ILocalStorage {
-  String? getUsername();
-  Future<void> saveUsername(String username);
+  List<Leaderboard> loadLeaderboard();
+  Future<void> saveLeaderboard(List<Leaderboard> list);
 }

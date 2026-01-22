@@ -5,7 +5,9 @@ import '../../../app/di.dart';
 import '../../../repositories/local_storage/local_storage.dart';
 import '../../../repositories/music_api/models/song.dart';
 import '../../../repositories/music_api/music_api.dart';
+import '../../../utils/game_utils.dart';
 import '../models/models.dart';
+import '../view/game_summary/models/leaderboard.dart';
 
 part 'game_state.dart';
 
@@ -163,15 +165,53 @@ class GameNotifier extends StateNotifier<GameState> {
 
       state = state.copyWith(
         currentQuestionIndex: state.currentQuestionIndex + 1,
-        selectedAnswer: null,
+        selectedAnswer: '',
         hasAnswered: false,
       );
     }
   }
 
-  void clearError() {
-    if (state.error != null) {
-      state = state.copyWith(error: null);
+  void finishGame() {
+    List<Leaderboard> board = _localStorageRepo.loadLeaderboard();
+    state = state.copyWith(leaderboard: board);
+
+    final newList = Leaderboard(
+      username: state.username,
+      score: state.score,
+      rank: getRank(state.score),
+    );
+    final currentBoard = List<Leaderboard>.from(state.leaderboard);
+    final existingIndex = currentBoard.indexWhere((user) => user.username == state.username);
+
+    if (existingIndex == -1) {
+      currentBoard.add(newList);
+    } else {
+      final existingUser = currentBoard[existingIndex];
+      if (state.score > existingUser.score) {
+        currentBoard[existingIndex] = newList;
+      }
     }
+    currentBoard.sort((a, b) => b.score.compareTo(a.score));
+
+    board = currentBoard.take(5).toList();
+    _saveLeaderboard(board);
+    state = state.copyWith(leaderboard: board);
+
+    final user = state.leaderboard.isNotEmpty
+        ? state.leaderboard[0].username : 'None';
+
+    _talker.info('[End Game]\n'
+        'Total players: ${state.leaderboard.length}\n'
+        'Top 1: $user'
+    );
+  }
+
+  void restart() {
+    state = const GameState();
+  }
+
+  void _saveLeaderboard(List<Leaderboard> board) {
+    _localStorageRepo.saveLeaderboard(board);
+    state = state.copyWith(leaderboard: board);
   }
 }

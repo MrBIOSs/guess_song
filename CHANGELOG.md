@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.0] - 2026-01-22
+- Added logic to the Game summary screen
+- Added Titles
+- Added leaderboard
+
 ## [2.2.0] - 2026-01-20
 - Added logic to the Game screen
 - Added points system

@@ -32,6 +32,14 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
     final audioState = ref.watch(audioPlayerProvider);
     final audioNotifier = ref.read(audioPlayerProvider.notifier);
 
+    if (gameState.questions.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted == false) return;
+        context.go(AppRoute.gameSetup);
+      });
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     final currentQuestion = gameState.questions[gameState.currentQuestionIndex];
     final isCorrect = gameState.hasAnswered && gameState.selectedAnswer == currentQuestion.song.title;
     final isWrong = gameState.hasAnswered && isCorrect == false;
@@ -225,6 +233,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                                 if (hasQuestion) {
                                   gameNotifier.nextQuestion();
                                 } else {
+                                  gameNotifier.finishGame();
                                   context.go('${AppRoute.game}${AppRoute.gameSummary}');
                                 }
                               },
@@ -244,7 +253,12 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
   }
 
   void _loadAudioForCurrentQuestion() {
+    if (mounted == false) return;
+
     final gameState = ref.read(gameProvider);
+    if (gameState.questions.isEmpty) return;
+    if (gameState.currentQuestionIndex >= gameState.questions.length) return;
+
     final currentQuestion = gameState.questions[gameState.currentQuestionIndex];
 
     ref.read(audioPlayerProvider.notifier).loadAudio(

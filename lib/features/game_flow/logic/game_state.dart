@@ -13,6 +13,7 @@ class GameState {
     this.score = 0,
     this.selectedAnswer,
     this.hasAnswered = false,
+    this.leaderboard = const [],
     this.isLoading = false,
     this.error,
   });
@@ -28,6 +29,7 @@ class GameState {
   final int score;
   final String? selectedAnswer;
   final bool hasAnswered;
+  final List<Leaderboard> leaderboard;
   final bool isLoading;
   final String? error;
 
@@ -43,6 +45,7 @@ class GameState {
     int? score,
     String? selectedAnswer,
     bool? hasAnswered,
+    List<Leaderboard>? leaderboard,
     bool? isLoading,
     String? error,
   }) {
@@ -58,6 +61,7 @@ class GameState {
       score: score ?? this.score,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       hasAnswered: hasAnswered ?? this.hasAnswered,
+      leaderboard: leaderboard ?? this.leaderboard,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
