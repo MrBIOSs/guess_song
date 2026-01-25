@@ -22,7 +22,7 @@ class BaseTextField extends StatelessWidget {
         Text(label),
         const SizedBox(height: 4),
         SizedBox(
-          height: 40,
+          height: 50,
           child: TextField(
             enabled: enabled,
             decoration: InputDecoration(hintText: hint),

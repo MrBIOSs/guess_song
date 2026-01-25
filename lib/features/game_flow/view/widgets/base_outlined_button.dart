@@ -14,6 +14,7 @@ class BaseOutlinedButton extends StatelessWidget {
     final isDisabled = onTap == null;
 
     return SizedBox(
+      height: 50,
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: onTap,

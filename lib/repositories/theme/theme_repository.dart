@@ -10,7 +10,7 @@ class ThemeRepository implements IThemeRepository {
   @override
   bool isDarkThemeSelected() {
     final isDarkTheme = _preferences.getBool(_isDarkThemeSelectedKey);
-    return isDarkTheme ?? false;
+    return isDarkTheme ?? true;
   }
 
   @override

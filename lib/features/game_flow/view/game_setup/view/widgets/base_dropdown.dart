@@ -25,7 +25,7 @@ class BaseDropdown<T> extends StatelessWidget {
         Text(label),
         const SizedBox(height: 4),
         SizedBox(
-          height: 40,
+          height: 50,
           child: DropdownButtonFormField<T>(
             value: value,
             items: items,

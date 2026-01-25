@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.4.0] - 2026-01-25
+- Adaptive design for mobile devices has been added
+
 ## [2.3.1] - 2026-01-25
 - Tests added
 - Added optimization

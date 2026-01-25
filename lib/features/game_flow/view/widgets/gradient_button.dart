@@ -12,7 +12,7 @@ class GradientButton extends StatelessWidget {
     final isDisabled = onTap == null;
 
     return SizedBox(
-      height: 40,
+      height: 50,
       width: double.infinity,
       child: Opacity(
         opacity: isDisabled ? 0.5 : 1,
@@ -35,13 +35,15 @@ class GradientButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppTheme.borderRadius),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white
+                child: Center(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),
