@@ -18,7 +18,7 @@ class Song {
   factory Song.fromJson(Map<String, dynamic> json) {
     final originalCoverUrl = json['artworkUrl100'] as String? ?? '';
     final coverUrl = originalCoverUrl.isEmpty ? ''
-        : originalCoverUrl.replaceAll('100x100', '400x400');
+        : originalCoverUrl.replaceAll(RegExp(r'\d+x\d+'), '400x400');
 
     return Song(
       id: json['trackId'] as int? ?? 0,

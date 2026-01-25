@@ -5,12 +5,14 @@ class BaseTextField extends StatelessWidget {
     super.key,
     required this.label,
     this.hint,
-    required this.onChanged
+    this.enabled = true,
+    required this.onChanged,
   });
 
   final String label;
   final String? hint;
-  final void Function(String) onChanged;
+  final bool enabled;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +24,8 @@ class BaseTextField extends StatelessWidget {
         SizedBox(
           height: 40,
           child: TextField(
-            decoration: InputDecoration(
-              hintText: hint,
-            ),
+            enabled: enabled,
+            decoration: InputDecoration(hintText: hint),
             onChanged: onChanged,
           ),
         ),

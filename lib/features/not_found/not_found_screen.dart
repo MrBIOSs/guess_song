@@ -11,13 +11,17 @@ class NotFoundScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 20,
           children: [
-            Icon(Icons.error, size: 100, color: theme.colorScheme.error),
+            Icon(
+              Icons.error,
+              size: 100,
+              color: theme.colorScheme.error,
+              semanticLabel: 'Error',
+            ),
             Text(
               '404 - Page not found',
               style: theme.textTheme.titleLarge,

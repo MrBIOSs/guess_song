@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../ui/theme/theme.dart';
 import '../../../../../router/router.dart';
-import '../../../../../utils/extensions/extensions.dart';
 import '../../../logic/game_provider.dart';
 import '../../widgets/widgets.dart';
 import '../logic/audio_player_provider.dart';
@@ -26,32 +26,44 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final state = ref.read(gameProvider);
+    if (state.questions.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.go(AppRoute.gameSetup);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen<int>(
+      gameProvider.select((s) => s.currentQuestionIndex), (prev, next) {
+      if (mounted == false) return;
+
+      final state = ref.read(gameProvider);
+      if (next < state.questions.length) {
+        _loadAudioForCurrentQuestion();
+      } else {
+        ref.read(audioPlayerProvider.notifier).stop();
+      }
+    });
+
     final gameState = ref.watch(gameProvider);
     final gameNotifier = ref.read(gameProvider.notifier);
     final audioState = ref.watch(audioPlayerProvider);
     final audioNotifier = ref.read(audioPlayerProvider.notifier);
 
     if (gameState.questions.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted == false) return;
-        context.go(AppRoute.gameSetup);
-      });
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const SizedBox.shrink();
     }
 
     final currentQuestion = gameState.questions[gameState.currentQuestionIndex];
     final isCorrect = gameState.hasAnswered && gameState.selectedAnswer == currentQuestion.song.title;
     final isWrong = gameState.hasAnswered && isCorrect == false;
     final hasQuestion = gameState.currentQuestionIndex < gameState.questions.length - 1;
-
-    ref.listen(gameProvider.select((s) => s.currentQuestionIndex), (prev, next) {
-      if (next < gameState.questions.length) {
-        _loadAudioForCurrentQuestion();
-      } else {
-        audioNotifier.stop();
-      }
-    });
 
     return PopScope(
       canPop: false,
@@ -61,7 +73,6 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
           backgroundColor: Colors.transparent,
           actions: const [ThemeToggleButton()],
         ),
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         body: SingleChildScrollView(
           child: SafeArea(
             child: Center(
@@ -95,7 +106,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                     ),
                     const SizedBox(height: 24),
                     WebCard(
-                      width: double.infinity,
+                      maxWidth: 650,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -198,7 +209,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                                     option,
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,
-                                      color: index == 3 ? Colors.white : null
+                                      color: isSelected ? Colors.white : null,
                                     ),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -229,12 +240,11 @@ class _GameScreenState extends ConsumerState<GameScreen> with TickerProviderStat
                             const SizedBox(height: 16),
                             GradientButton(
                               label: hasQuestion ? 'Next Question' : 'View Results',
-                              onTap: () {
-                                if (hasQuestion) {
-                                  gameNotifier.nextQuestion();
-                                } else {
-                                  gameNotifier.finishGame();
-                                  context.go('${AppRoute.game}${AppRoute.gameSummary}');
+                              onTap:() {
+                                gameNotifier.nextQuestion();
+
+                                if (hasQuestion == false) {
+                                  context.go('${AppRoute.game}/${AppRoute.gameSummary}');
                                 }
                               },
                             ),

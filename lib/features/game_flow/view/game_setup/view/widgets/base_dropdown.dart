@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guess_song/ui/theme/theme.dart';
-import 'package:guess_song/utils/extensions/extensions.dart';
+import '../../../../../../ui/theme/theme.dart';
 
 class BaseDropdown<T> extends StatelessWidget {
   const BaseDropdown({
@@ -8,13 +7,15 @@ class BaseDropdown<T> extends StatelessWidget {
     required this.label,
     required this.items,
     required this.value,
+    this.enabled = true,
     required this.onChanged
   });
 
   final String label;
   final List<DropdownMenuItem<T>> items;
   final T value;
-  final void Function(T?) onChanged;
+  final bool enabled;
+  final ValueChanged<T?> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class BaseDropdown<T> extends StatelessWidget {
           child: DropdownButtonFormField<T>(
             value: value,
             items: items,
-            onChanged: onChanged,
+            onChanged: enabled ? onChanged : null,
             icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).borderColor),
             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
             style: Theme.of(context).textTheme.bodyMedium,

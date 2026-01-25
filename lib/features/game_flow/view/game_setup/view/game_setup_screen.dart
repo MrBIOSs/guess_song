@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../../utils/extensions/platform.dart';
 import '../../../../../router/router.dart';
 import '../../../../../ui/theme/theme.dart';
-import '../../../../../utils/extensions/extensions.dart';
 import '../../../logic/game_provider.dart';
 import '../../../models/game_config.dart';
 import '../../widgets/widgets.dart';
@@ -38,9 +38,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
     final gameNotifier = ref.read(gameProvider.notifier);
 
     ref.listen(gameProvider, (previous, next) {
-      if (next.questions.isNotEmpty &&
-          next.currentQuestionIndex == 0 &&
-          previous?.questions.isEmpty == true) {
+      if (next.questions.isNotEmpty && previous?.questions.isEmpty == true) {
         context.go(AppRoute.game);
       }
     });
@@ -50,7 +48,6 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
         backgroundColor: Colors.transparent,
         actions: const [ThemeToggleButton()],
       ),
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Center(
@@ -86,6 +83,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                     label: 'Username',
                     hint: 'Enter your name',
                     onChanged: gameNotifier.setUsername,
+                    enabled: gameState.isLoading == false,
                   ),
                   const SizedBox(height: 16),
                   BaseDropdown<GameMode>(
@@ -99,12 +97,14 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                       if (value == null) return;
                       gameNotifier.setGameMode(value);
                     },
+                    enabled: gameState.isLoading == false,
                   ),
                   const SizedBox(height: 16),
                   BaseTextField(
                     label: 'Search Artist',
                     hint: 'e.g. Coldplay, Starset...',
                     onChanged: gameNotifier.setArtistName,
+                    enabled: gameState.isLoading == false,
                   ),
                   if (gameState.gameMode == GameMode.album)...[
                     const SizedBox(height: 16),
@@ -112,6 +112,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                       label: 'Album Name',
                       hint: 'e.g. Parachutes, Silos...',
                       onChanged: gameNotifier.setAlbumName,
+                      enabled: gameState.isLoading == false,
                     ),
                   ],
                   const SizedBox(height: 20),
@@ -153,6 +154,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                       if (value == null) return;
                       gameNotifier.setDifficulty(value);
                     },
+                    enabled: gameState.isLoading == false,
                   ),
                   if (gameState.error != null)...[
                     const SizedBox(height: 12),
@@ -169,12 +171,10 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                   const SizedBox(height: 24),
                   GradientButton(
                     label: 'Start Game',
-                    onTap: gameNotifier.startGame,
+                    onTap: gameState.isLoading ? null : gameNotifier.startGame,
                   ),
                   const SizedBox(height: 12),
-                  Center(
-                    child: Text('Version: $_version'),
-                  ),
+                  Center(child: Text('Version: $_version')),
                 ],
               ),
             ),
@@ -186,8 +186,8 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
 
   Future<void> _getVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      _version = packageInfo.version;
-    });
+
+    if (mounted == false) return;
+    setState(() => _version = packageInfo.version);
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -8,12 +9,15 @@ import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
 
 import 'app/app.dart';
 
-Future<void> main() async {
-  await DIContainer.init();
-
-  runZonedGuarded(() {
+void main() {
+  runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    usePathUrlStrategy();
+
+    await DIContainer.init();
+
+    if (kIsWeb) {
+      usePathUrlStrategy();
+    }
 
     runApp(ProviderScope(
       observers: [

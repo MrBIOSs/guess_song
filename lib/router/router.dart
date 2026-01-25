@@ -1,9 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../app/di.dart';
-import '../features/game_flow/logic/game_provider.dart';
 import '../features/game_flow/view/game/view/game_screen.dart';
 import '../features/game_flow/view/game_setup/view/game_setup_screen.dart';
 import '../features/game_flow/view/game_summary/view/game_summary_screen.dart';
@@ -14,7 +12,7 @@ abstract class AppRoute {
 
   static const gameSetup = '/game-setup';
   static const game = '/game';
-  static const gameSummary = '/summary';
+  static const gameSummary = 'summary';
 }
 
 final router = GoRouter(
@@ -22,7 +20,10 @@ final router = GoRouter(
     TalkerRouteObserver(G<Talker>()),
   ],
   initialLocation: AppRoute.root,
-  errorBuilder: (_, __) => const NotFoundScreen(),
+  errorBuilder: (_, state) {
+    G<Talker>().error('Route error', state.error);
+    return const NotFoundScreen();
+  },
   routes: [
     GoRoute(
       path: AppRoute.root,
@@ -35,15 +36,6 @@ final router = GoRouter(
     GoRoute(
       path: AppRoute.game,
       builder: (_, __) => const GameScreen(),
-      redirect: (context, state) {
-        final container = ProviderScope.containerOf(context);
-        final questions = container.read(gameProvider).questions;
-
-        if (questions.isEmpty) {
-          return AppRoute.gameSetup;
-        }
-        return null;
-      },
       routes: [
         GoRoute(
           path: AppRoute.gameSummary,

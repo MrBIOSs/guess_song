@@ -4,24 +4,25 @@ import '../../../../ui/theme/theme.dart';
 class WebCard extends StatelessWidget {
   const WebCard({
     super.key,
-    this.width = 450,
+    this.maxWidth = 450,
     this.margin,
     required this.child,
   });
 
-  final double? width;
+  final double maxWidth ;
   final EdgeInsetsGeometry? margin;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      width: width,
       margin: margin,
       padding: const EdgeInsets.all(28),
-      constraints: const BoxConstraints(maxWidth: 650),
+      constraints: BoxConstraints(maxWidth: maxWidth),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
         boxShadow: [
           BoxShadow(

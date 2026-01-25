@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../ui/theme/theme.dart';
-import '../../../../../utils/extensions/extensions.dart';
 import '../../../../../router/router.dart';
 import '../../../../../utils/game_utils.dart';
 import '../../../logic/game_provider.dart';
@@ -25,7 +24,6 @@ class GameSummaryScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           actions: const [ThemeToggleButton()],
         ),
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         body: SingleChildScrollView(
           child: SafeArea(
             child: Center(
@@ -68,7 +66,7 @@ class GameSummaryScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Rank: ${getRank(gameState.score)}',
+                      'Rank: ${getPlayerRank(gameState.score).label}',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Theme.of(context).bodyTextColor,
@@ -116,9 +114,9 @@ class GameSummaryScreen extends ConsumerWidget {
                                   )
                               ),
                               subtitle: Text(
-                                  user.rank,
+                                  getPlayerRank(gameState.score).label,
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).disabledTextColor,
+                                    color: Theme.of(context).disabledColor,
                                   )
                               ),
                               trailing: Text('${user.score}', style: Theme.of(context).textTheme.titleSmall),

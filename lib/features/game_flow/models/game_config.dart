@@ -6,12 +6,12 @@ class DifficultySettings {
 
   final int clipDuration;
   final int points;
+}
 
-  static DifficultySettings get(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy: return const DifficultySettings(clipDuration: 30, points: 10);
-      case Difficulty.medium: return const DifficultySettings(clipDuration: 15, points: 20);
-      case Difficulty.hard: return const DifficultySettings(clipDuration: 10, points: 30);
-    }
-  }
+extension DifficultExtension on Difficulty {
+  DifficultySettings get settings => switch (this) {
+    Difficulty.easy => const DifficultySettings(clipDuration: 30, points: 10),
+    Difficulty.medium => const DifficultySettings(clipDuration: 15, points: 20),
+    Difficulty.hard => const DifficultySettings(clipDuration: 10, points: 30),
+  };
 }

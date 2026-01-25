@@ -5,16 +5,14 @@ import '../../../app/di.dart';
 import '../../../repositories/local_storage/local_storage.dart';
 import '../../../repositories/music_api/models/song.dart';
 import '../../../repositories/music_api/music_api.dart';
-import '../../../utils/game_utils.dart';
 import '../models/models.dart';
-import '../view/game_summary/models/leaderboard.dart';
 
 part 'game_state.dart';
 
 final gameProvider = StateNotifierProvider<GameNotifier, GameState>((ref) {
   return GameNotifier(
-    musicRepo: ref.read(iTunesRepositoryProvider),
-    localStorageRepo: ref.read(localStorageProvider),
+    musicRepo: G<IMusicRepository>(),
+    localStorageRepo: G<ILocalStorage>(),
     talker: G<Talker>(),
   );
 });
@@ -50,11 +48,11 @@ class GameNotifier extends StateNotifier<GameState> {
 
   Future<void> searchSongs() async {
     if (state.artistName.trim().isEmpty) {
-      state = state.copyWith(error: 'Enter artist name', isLoading: false);
+      state = state.copyWith(error: 'Enter artist name');
       return;
     }
     if (state.gameMode == GameMode.album && state.albumName.trim().isEmpty) {
-      state = state.copyWith(error: 'Enter album name', isLoading: false);
+      state = state.copyWith(error: 'Enter album name');
       return;
     }
 
@@ -75,11 +73,75 @@ class GameNotifier extends StateNotifier<GameState> {
     }
   }
 
-  Future<List<Question>> generateQuestions(List<Song> pool) async {
-    if (pool.length < 4) {
-      state = state.copyWith(error: 'Not enough songs (min 4)');
-      return [];
+  Future<void> startGame() async {
+    if (state.username.trim().isEmpty || state.artistName.trim().isEmpty) {
+      state = state.copyWith(error: 'Fill all fields');
+      return;
     }
+    final questions = await _generateQuestions(state.foundSongs);
+
+    if (questions.isEmpty) {
+      state = state.copyWith(error: 'Not enough songs (min 4)');
+      return;
+    }
+
+    state = state.copyWith(
+      questions: questions,
+      currentQuestionIndex: 0,
+      score: 0,
+      selectedAnswer: null,
+      hasAnswered: false,
+      error: null,
+    );
+
+    _talker.info('[Starting game]\n'
+        'Player name: ${state.username}\n'
+        'Game Mode: ${state.gameMode.name}\n'
+        'Artist: ${state.artistName}\n'
+        'Album Name: ${state.albumName}\n'
+        'Difficulty: ${state.difficulty.name}\n'
+        'Questions: ${state.questions.length}'
+    );
+  }
+
+  void selectAnswer(String answer) {
+    if (state.hasAnswered) return;
+
+    final isCorrect = answer == state.questions[state.currentQuestionIndex].song.title;
+    final newScore = isCorrect 
+        ? state.score + state.difficulty.settings.points
+        : state.score;
+
+    state = state.copyWith(
+      selectedAnswer: answer,
+      hasAnswered: true,
+      score: newScore,
+    );
+  }
+
+  void nextQuestion() {
+    if (state.currentQuestionIndex < state.questions.length - 1) {
+      _talker.info('[Next question #${state.currentQuestionIndex + 1}]\n'
+          'Current answer: ${state.selectedAnswer}\n'
+          'Correct answer: ${state.questions[state.currentQuestionIndex].song.title}'
+      );
+
+      state = state.copyWith(
+        currentQuestionIndex: state.currentQuestionIndex + 1,
+        selectedAnswer: '',
+        hasAnswered: false,
+      );
+    } else {
+      _finishGame();
+    }
+  }
+
+  void restart() {
+    state = const GameState();
+  }
+
+  Future<List<Question>> _generateQuestions(List<Song> pool) async {
+    if (pool.length < 4) return [];
 
     final uniqueSongs = <Song>[];
     final seenTitles  = <String>{};
@@ -113,74 +175,14 @@ class GameNotifier extends StateNotifier<GameState> {
     return questions;
   }
 
-  Future<void> startGame() async {
-    if (state.username.trim().isEmpty || state.artistName.trim().isEmpty) {
-      state = state.copyWith(error: 'Fill all fields');
-      return;
-    }
-    final questions = await generateQuestions(state.foundSongs);
-
-    if (questions.isNotEmpty) {
-      state = state.copyWith(
-        questions: questions,
-        currentQuestionIndex: 0,
-        score: 0,
-        selectedAnswer: null,
-        hasAnswered: false,
-        error: null,
-      );
-    }
-
-    _talker.info('[Starting game]\n'
-        'Player name: ${state.username}\n'
-        'Game Mode: ${state.gameMode.name}\n'
-        'Artist: ${state.artistName}\n'
-        'Album Name: ${state.artistName}\n'
-        'Difficulty: ${state.difficulty.name}\n'
-        'Questions: ${state.questions.length}'
-    );
-  }
-
-  void selectAnswer(String answer) {
-    if (state.hasAnswered) return;
-
-    final isCorrect = answer == state.questions[state.currentQuestionIndex].song.title;
-    final newScore = isCorrect 
-        ? state.score + DifficultySettings.get(state.difficulty).points 
-        : state.score;
-
-    state = state.copyWith(
-      selectedAnswer: answer,
-      hasAnswered: true,
-      score: newScore,
-    );
-  }
-
-  void nextQuestion() {
-    if (state.currentQuestionIndex < state.questions.length - 1) {
-      _talker.info('[Next question #${state.currentQuestionIndex + 1}]\n'
-          'Current answer: ${state.selectedAnswer}\n'
-          'Correct answer: ${state.questions[state.currentQuestionIndex].song.title}'
-      );
-
-      state = state.copyWith(
-        currentQuestionIndex: state.currentQuestionIndex + 1,
-        selectedAnswer: '',
-        hasAnswered: false,
-      );
-    }
-  }
-
-  void finishGame() {
+  void _finishGame() {
     List<Leaderboard> board = _localStorageRepo.loadLeaderboard();
-    state = state.copyWith(leaderboard: board);
 
     final newList = Leaderboard(
       username: state.username,
       score: state.score,
-      rank: getRank(state.score),
     );
-    final currentBoard = List<Leaderboard>.from(state.leaderboard);
+    final currentBoard = List<Leaderboard>.from(board);
     final existingIndex = currentBoard.indexWhere((user) => user.username == state.username);
 
     if (existingIndex == -1) {
@@ -204,10 +206,6 @@ class GameNotifier extends StateNotifier<GameState> {
         'Total players: ${state.leaderboard.length}\n'
         'Top 1: $user'
     );
-  }
-
-  void restart() {
-    state = const GameState();
   }
 
   void _saveLeaderboard(List<Leaderboard> board) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
 import '../../../../../app/di.dart';
 import '../../../../../repositories/audio_player/audio_player.dart';
 import '../../../models/game_config.dart';
@@ -9,7 +10,7 @@ import '../../../models/game_config.dart';
 part 'audio_player_state.dart';
 
 final audioPlayerProvider = StateNotifierProvider<AudioPlayerNotifier, AudioPlayerState>((ref) {
-  final repo = ref.read(audioPlayerRepositoryProvider);
+  final repo = G<IAudioPlayer>();
   final notifier = AudioPlayerNotifier(repo);
 
   ref.onDispose(notifier.dispose);
@@ -29,9 +30,11 @@ class AudioPlayerNotifier extends StateNotifier<AudioPlayerState> {
 
   void _setupStreams() {
     _progressSub = _audioPlayer.progressStream.listen((progress) {
+      if (mounted == false) return;
       state = state.copyWith(progress: progress);
     });
     _playingSub = _audioPlayer.isPlayingStream.listen((isPlaying) {
+      if (mounted == false) return;
       state = state.copyWith(isPlaying: isPlaying);
     });
   }
@@ -55,7 +58,7 @@ class AudioPlayerNotifier extends StateNotifier<AudioPlayerState> {
     try {
       await _audioPlayer.play();
     } catch (e, st) {
-      Talker().handle(e, st, 'Audio Play Failed');
+      G<Talker>().handle(e, st, 'Audio Play Failed');
       state = state.copyWith(errorMessage: 'Audio Play Failed');
     }
   }
@@ -63,8 +66,6 @@ class AudioPlayerNotifier extends StateNotifier<AudioPlayerState> {
   Future<void> stop() async {
     try {
       await _audioPlayer.stop();
-
-      state = state.copyWith(isPlaying: false, progress: 0.0);
     } catch (e, st) {
       G<Talker>().handle(e, st, 'Audio Stop Failed');
     }
@@ -72,6 +73,7 @@ class AudioPlayerNotifier extends StateNotifier<AudioPlayerState> {
 
   @override
   void dispose() {
+    stop();
     _progressSub?.cancel();
     _playingSub?.cancel();
     super.dispose();

@@ -7,21 +7,19 @@ abstract class AppTheme {
   static const errorColor = Color(0xFFCF6679);
 
   // Light theme
-  static const lightBackgroundColor = Colors.white;
-  static const lightSecondaryColor = Color(0xFFEFFEFB);
+  static const lightBackgroundColor = Color(0xFFEFFEFB);
   static const lightSurfaceColor = Colors.white;
   static const lightBorderColor = Color(0xFFCCCCCC);
   static const lightFillColor = Colors.white;
   static const lightTextColor = Color(0xFF282828);
-  static const lightDisabledTextColor = Color(0xFF999999);
+  static const lightDisabledColor = Color(0xFF999999);
 
   // Dark theme
-  static const darkBackgroundColor = Color(0xFF0F1B2B);
-  static const darkSecondaryColor = Color(0xFF023137);
-  static const darkSurfaceColor = Color(0xFF3D3D3D);
+  static const darkBackgroundColor = Color(0xFF023137);
+  static const darkSurfaceColor = Color(0xFF0F1B2B);
   static const darkFillColor = Color(0xFF192533);
   static const darkTextColor = Colors.white;
-  static const darkDisabledTextColor = Color(0xFFB3B3B3);
+  static const darkDisabledColor = Color(0xFFB3B3B3);
 
   static const borderRadius = 12.0;
 
@@ -50,7 +48,6 @@ abstract class AppTheme {
     ).copyWith(
       primary: primaryColor,
       secondary: accentColor,
-      secondaryContainer: lightSecondaryColor,
       error: errorColor,
       surface: lightSurfaceColor,
       outline: lightBorderColor,
@@ -94,7 +91,7 @@ abstract class AppTheme {
         borderRadius: BorderRadius.circular(borderRadius),
         borderSide: const BorderSide(color: errorColor, width: 2),
       ),
-      hintStyle: const TextStyle(fontSize: 14, color: lightDisabledTextColor),
+      hintStyle: const TextStyle(fontSize: 14, color: lightDisabledColor),
     ),
 
     outlinedButtonTheme: _outlinedButtonTheme,
@@ -120,7 +117,6 @@ abstract class AppTheme {
     ).copyWith(
       primary: primaryColor,
       secondary: accentColor,
-      secondaryContainer: darkSecondaryColor,
       error: errorColor,
       surface: darkSurfaceColor,
       outline: Colors.grey.shade800,
@@ -164,7 +160,7 @@ abstract class AppTheme {
         borderRadius: BorderRadius.circular(borderRadius),
         borderSide: const BorderSide(color: errorColor, width: 2),
       ),
-      hintStyle: TextStyle(fontSize: 14, color: darkDisabledTextColor.withValues(alpha: .7)),
+      hintStyle: TextStyle(fontSize: 14, color: darkDisabledColor.withValues(alpha: .7)),
     ),
 
     outlinedButtonTheme: _outlinedButtonTheme,
@@ -229,4 +225,38 @@ abstract class AppTheme {
       minLeadingWidth: 12,
     );
   }
+}
+
+extension ColorsTheme on ThemeData  {
+  Color get titleTextColor => brightness == Brightness.dark
+      ? AppTheme.accentColor.shade400
+      : AppTheme.primaryColor;
+
+  Color get bodyTextColor => brightness == Brightness.dark
+      ? Colors.grey
+      : Colors.grey.shade700;
+
+  Color get labelTextColor => brightness == Brightness.dark
+      ? Colors.grey.shade400
+      : Colors.grey.shade700;
+
+  Color get successfulTextColor => brightness == Brightness.dark
+      ? Colors.greenAccent.shade400
+      : Colors.green.shade600;
+
+  Color get fillColor => brightness == Brightness.dark
+      ? AppTheme.darkFillColor
+      : AppTheme.lightFillColor;
+
+  Color get borderColor => brightness == Brightness.dark
+      ? Colors.grey.shade800
+      : AppTheme.lightBorderColor;
+
+  Color get disabledColor => brightness == Brightness.dark
+      ? AppTheme.darkDisabledColor
+      : AppTheme.lightDisabledColor;
+
+  Color get accentBorderColor => brightness == Brightness.dark
+      ? AppTheme.primaryColor.shade800
+      : AppTheme.accentColor;
 }

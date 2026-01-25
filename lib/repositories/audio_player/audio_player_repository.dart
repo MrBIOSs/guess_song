@@ -1,21 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import '../../app/di.dart';
+
 import '../../features/game_flow/models/game_config.dart';
 import 'audio_player_interface.dart';
 
-final audioPlayerRepositoryProvider = Provider<IAudioPlayer>((ref) {
-  final repo = AudioPlayerRepository();
-  ref.onDispose(repo.dispose);
-  return repo;
-});
-
 class AudioPlayerRepository implements IAudioPlayer {
-  AudioPlayerRepository() {
+  AudioPlayerRepository(this._talker) {
     _progressController = StreamController<double>.broadcast();
     _playingController = StreamController<bool>.broadcast();
 
@@ -40,6 +33,7 @@ class AudioPlayerRepository implements IAudioPlayer {
     });
   }
 
+  final Talker _talker;
   final AudioPlayer _player = AudioPlayer();
   late final StreamSubscription<Duration> _positionSub;
   late final StreamController<double> _progressController;
@@ -51,9 +45,6 @@ class AudioPlayerRepository implements IAudioPlayer {
   bool _isPlaying = false;
 
   @override
-  Stream<Duration> get positionStream => _player.positionStream;
-
-  @override
   Stream<bool> get isPlayingStream => _playingController.stream;
 
   @override
@@ -62,7 +53,7 @@ class AudioPlayerRepository implements IAudioPlayer {
   @override
   Future<void> loadClip(String audioUrl, Difficulty difficulty) async {
     if (audioUrl.isEmpty) {
-      G<Talker>().warning('AudioUrl isEmpty!');
+      _talker.warning('AudioUrl isEmpty!');
       return;
     }
 
@@ -75,7 +66,7 @@ class AudioPlayerRepository implements IAudioPlayer {
       _progressController.add(0.0);
 
       final totalDuration = await _player.setUrl(audioUrl) ?? Duration.zero;
-      final settings = DifficultySettings.get(difficulty);
+      final settings = difficulty.settings;
 
       _clipDuration = Duration(seconds: settings.clipDuration);
       _audioUrl = audioUrl;
@@ -85,8 +76,9 @@ class AudioPlayerRepository implements IAudioPlayer {
       _startPosition = Duration(seconds: startTime);
 
       await _player.seek(_startPosition);
-    } catch (e) {
+    } catch (e, st) {
       _audioUrl = null;
+      _talker.error('Failed to load audio', e, st);
       rethrow;
     }
   }
@@ -106,12 +98,11 @@ class AudioPlayerRepository implements IAudioPlayer {
     await _player.pause();
     await _player.seek(_startPosition);
     _progressController.add(0.0);
-    _playingController.add(false);
   }
 
   @override
-  void dispose() {
-    _positionSub.cancel();
+  Future<void> dispose() async {
+    await _positionSub.cancel();
     _progressController.close();
     _playingController.close();
     _player.dispose();

@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.1] - 2026-01-25
+- Tests added
+- Added optimization
+- Fixed minor bugs
+
 ## [2.3.0] - 2026-01-22
 - Added logic to the Game summary screen
 - Added Titles
