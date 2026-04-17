@@ -22,6 +22,9 @@
 - 🔹 **Titles/ranks** based on total earned points
 - 🥇 **Local leaderboard** (Top 5 players on this device)
 
+## Demo
+You can try the web demo version [here]( https://mrbioss.github.io/guess_song/).
+
 ## 🛠 Technology stack
 
 - **Flutter** — for cross-platform development
