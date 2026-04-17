@@ -1,1 +1,0 @@
-void configureUrlStrategy() {} // placeholder for mobile
